@@ -1,0 +1,112 @@
+# Instructions for Using Graphiti MCP Tools
+
+## Before Starting Any Task
+
+**Always Search First:** Before beginning work, use the search_memory_nodes tool to find relevant preferences and procedures.
+
+**Search Facts Simultaneously:** Use the search_memory_facts tool to discover relationships and factual information that might be relevant to your task.
+
+**Filter by Entity Type:** Specify "Preference" or "Procedure" in node searches to get targeted results.
+
+**Review All Matches:** Carefully examine any preferences, procedures, or facts that match the current task.
+
+## Always Save New or Updated Information
+
+**Immediately Capture Requirements and Preferences:** When users express needs or preferences, immediately store them using add_memory. Best practice is to break very long requirements into shorter logical chunks.
+
+**Clearly Identify Updates:** If something is an update to existing knowledge, make this explicit.
+
+**Record Procedures Clearly:** When you discover how a user wants something done, document it as a procedure.
+
+**Document Factual Relationships:** When you learn about connections between entities, store this information as facts.
+
+**Categorize Explicitly:** Label preferences and procedures with clear categories for better future retrieval.
+
+## During Work
+
+**Follow Discovered Preferences:** Align your work with any preferences found.
+
+**Strictly Execute Procedures:** If you find procedures applicable to the current task, follow them step by step.
+
+**Apply Relevant Facts:** Use factual information to guide your decisions and recommendations.
+
+**Maintain Consistency:** Stay consistent with previously identified preferences, procedures, and facts.
+
+## Best Practices
+
+**Search Before Suggesting:** Always check for existing knowledge before making recommendations.
+
+**Combine Node and Fact Searches:** For complex tasks, search both nodes and facts to build a complete picture.
+
+**Use center_node_uuid:** When exploring related information, search around specific nodes.
+
+**Prioritize Specific Matches:** More specific information takes precedence over general information.
+
+**Proactively Identify Patterns:** If you notice patterns in user behavior, consider storing them as preferences or procedures.
+
+**Important Reminder:** The knowledge graph is your memory. Continuously use it to provide personalized assistance that respects the user's established procedures and factual context.
+
+## Tool Usage Guidelines
+
+### Search Tools
+- **search_memory_nodes**: Find entities (people, places, concepts) with summaries of their relationships
+- **search_memory_facts**: Find specific relationships and facts between entities
+- Use natural language queries for best results
+- Filter by group_id when working with specific domains
+
+### Memory Tools
+- **add_memory**: Store new information as episodes
+  - Use descriptive names for episodes
+  - Choose appropriate source types: 'text', 'json', or 'message'
+  - Provide source descriptions for context
+- **get_episodes**: Retrieve recent episodes for context
+
+### Management Tools
+- **delete_entity_edge**: Remove specific relationships
+- **delete_episode**: Remove episodes
+- **clear_graph**: Reset the entire knowledge graph (use with caution)
+
+### Memory Organization
+- Use consistent group_ids for related information
+- Break complex information into logical episodes
+- Maintain clear naming conventions
+- Regular cleanup of outdated information
+
+Remember: The knowledge graph evolves with each interaction. Always leverage existing knowledge while continuously enriching it with new insights and patterns.
+
+## Graphiti Project Specific Rules
+
+This is the Graphiti knowledge graph project. When working on this codebase:
+
+1. **Understand the Architecture**: Graphiti is a memory service for AI agents built on Neo4j
+2. **Core Components**: 
+   - Episodes (content snippets)
+   - Nodes (entities) 
+   - Facts (relationships between entities)
+3. **Key Modules**:
+   - `graphiti_core/` - Main library code
+   - `server/` - FastAPI server implementation
+   - `examples/` - Usage examples
+   - `tests/` - Test suite
+4. **Database Support**: Neo4j and FalkorDB drivers available
+5. **LLM Integration**: Multiple LLM providers supported (OpenAI, Anthropic, Gemini, etc.)
+
+When making changes to this project, always consider the impact on the knowledge graph structure and ensure backward compatibility.
+
+## Schema Validation Procedure
+
+**CRITICAL**: Always validate database schema before executing Neo4j Cypher queries or MCP search operations:
+
+### Pre-Query Schema Discovery:
+1. **Check Entity Labels**: `docker exec graphiti-neo4j-1 cypher-shell -u neo4j -p password "MATCH (n) RETURN DISTINCT labels(n) ORDER BY labels(n)"`
+2. **Verify Properties**: `docker exec graphiti-neo4j-1 cypher-shell -u neo4j -p password "MATCH (n) RETURN DISTINCT labels(n) as labels, keys(n) as properties LIMIT 10"`
+3. **Check Group IDs**: `docker exec graphiti-neo4j-1 cypher-shell -u neo4j -p password "MATCH (n) RETURN DISTINCT n.group_id"`
+4. **Relationship Types**: `docker exec graphiti-neo4j-1 cypher-shell -u neo4j -p password "MATCH ()-[r]->() RETURN DISTINCT type(r)"`
+
+### MCP Search Guidelines:
+- Don't assume entity types ("Preference", "Procedure") exist unless verified
+- Use actual group_ids found in database
+- Match actual property names and relationship types
+- Test searches without entity filters first if searches fail
+
+**Neo4j Credentials**: Username: `neo4j`, Password: `password` 
