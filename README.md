@@ -150,44 +150,6 @@ neo4j-backup      # Quick backup (saves to ./backups/)
 neo4j-restore     # Interactive restore (from ./backups/)
 ```
 
-## 📊 Database Queries
-
-### Pre-written Cypher Queries
-
-The repository includes 30 pre-written Cypher queries in `neo4j_queries.cypher`:
-
-**Categories:**
-- **Schema Overview** (3 queries) - Database structure
-- **Content Exploration** (4 queries) - Browse entities and episodes
-- **Relationship Analysis** (3 queries) - Entity connections
-- **Repository Insights** (4 queries) - Project-specific analysis
-- **Graph Visualization** (3 queries) - Network views
-- **Search & Analysis** (4 queries) - Find specific data
-- **Advanced Analysis** (5 queries) - Complex analytics
-- **Maintenance** (4 queries) - Database health
-
-### Example Queries
-
-```cypher
--- View all entities
-MATCH (n:Entity) 
-WHERE n.group_id = 'default'
-RETURN n.name, n.summary 
-ORDER BY n.created_at DESC;
-
--- Explore relationships
-MATCH (a:Entity)-[r:RELATES_TO]->(b:Entity)
-WHERE a.group_id = 'default'
-RETURN a.name as Source, b.name as Target
-LIMIT 10;
-
--- Episode timeline
-MATCH (n:Episodic) 
-WHERE n.group_id = 'default'
-RETURN n.name, n.created_at 
-ORDER BY n.created_at DESC;
-```
-
 ## 🔧 Development
 
 ### Database Schema
@@ -205,56 +167,6 @@ The setup includes 192+ APOC procedures for:
 - UUID generation
 - Triggers and TTL
 - Performance optimization
-
-### Environment Details
-
-- **OS**: macOS darwin 25.0.0
-- **Shell**: /bin/zsh
-- **Architecture**: Multi-arch support (arm64, x86_64)
-- **Privacy**: Telemetry disabled by default
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-**Port Conflicts:**
-```bash
-# Check port usage
-lsof -i :7687
-lsof -i :7474
-
-# Kill conflicting processes
-kill -9 <PID>
-```
-
-**Container Issues:**
-```bash
-# View logs
-docker compose logs neo4j
-docker compose logs graph
-
-# Restart services
-docker compose restart
-```
-
-**Database Connection:**
-```bash
-# Test Neo4j connection
-docker exec graphiti-mcp-setup-neo4j-1 cypher-shell -u neo4j -p password "MATCH (n) RETURN count(n);"
-```
-
-### Health Checks
-
-```bash
-# Service status
-docker compose ps
-
-# API health
-curl http://localhost:8000/health
-
-# Database status
-source neo4j_aliases.sh && neo4j_status
-```
 
 ## 📚 Usage Examples
 
